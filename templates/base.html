@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}ArcDrive – Rent a car or bike{% endblock %}</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head><body data-csrf="{{ csrf }}">
+<div class="glow" aria-hidden="true"></div>
+<div class="wrap"><header><a class="logo" href="{{ url_for('index') }}"><i></i>ArcDrive</a>
+<nav><a href="{{ url_for('cars') }}">Cars</a><a href="{{ url_for('bikes') }}">Bikes</a>
+{% if uname %}<a href="{{ url_for('profile') }}">Profile</a>{% if is_admin %}<a href="{{ url_for('admin') }}">Admin</a>{% endif %}
+<form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost sm">Log out</button></form>
+{% else %}<a href="{{ url_for('login') }}">Log in</a><a class="btn sm" href="{{ url_for('register') }}">Sign up</a>{% endif %}</nav></header>
+{% for x in get_flashed_messages() %}<p class="flash" role="status">{{ x }}</p>{% endfor %}
+{% block content %}{% endblock %}
+<footer><span>© 2026 ArcDrive. All rights reserved.</span></footer></div>{% block js %}{% endblock %}</body></html>

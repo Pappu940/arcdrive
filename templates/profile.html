@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block title %}Profile – ArcDrive{% endblock %}{% block content %}
+<section class="who2"><div class="av">{{ u.name[0]|upper }}</div><div><h1>{{ u.name }}</h1><p>{{ u.email }}</p></div></section>
+<div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))"><div><b>{{ count }}</b><span>Bookings</span></div><div><b>{{ inr(spent) }}</b><span>Paid so far</span></div><div><b>{{ inr(due) }}</b><span>To pay on return</span></div><div><b>{{ upcoming }}</b><span>Upcoming</span></div></div>
+<h2 class="sec">Last booking</h2>
+{% if last %}{% set st = state(last) %}{% set d = days(last) %}{% set sub = last.price*d %}
+<article class="last"><div class="top"><div><h3>{{ last.name }}</h3><p class="specs"><span>{{ last.kind }}</span><span>{{ last.seats }} seats</span><span>{{ last.fuel }}</span><span>{{ last.gear }}</span></p></div><span class="st {{ st }}">{{ st|capitalize }}</span></div>
+<dl><div><dt>Reference</dt><dd>{{ last.ref }}</dd></div><div><dt>Pickup</dt><dd>{{ last.start_date }}</dd></div><div><dt>Return</dt><dd>{{ last.end_date }}</dd></div><div><dt>Duration</dt><dd>{{ d }} day{{ 's' if d>1 }}</dd></div>
+<div><dt>Rate</dt><dd>{{ inr(last.price) }} / day</dd></div><div><dt>Subtotal</dt><dd>{{ inr(sub) }}</dd></div><div><dt>Tax (18%)</dt><dd>{{ inr(last.total-sub) }}</dd></div><div><dt>Total</dt><dd class="tot">{{ inr(last.total) }}</dd></div>
+<div><dt>Payment</dt><dd>{% if last.paid_at %}Paid via {{ last.pay_method }} on {{ last.paid_at }}{% elif st=='cancelled' %}Nothing due{% else %}Pay {{ inr(last.total) }} on return{% endif %}</dd></div></dl>
+<div class="acts"><a class="btn" href="{{ url_for('cars' if last.kind=='Car' else 'bikes') }}">Book again</a>
+{% if st=='upcoming' %}<form method="post" action="{{ url_for('cancel', bid=last.id) }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost">Cancel booking</button></form>{% endif %}</div></article>
+<h2 class="sec">All bookings</h2><div class="scroll"><table><tr><th>Ref</th><th>Vehicle</th><th>Dates</th><th>Total</th><th>Payment</th><th>Status</th></tr>
+{% for r in rows %}<tr><td>{{ r.ref }}</td><td>{{ r.name }}</td><td>{{ r.start_date }} → {{ r.end_date }}</td><td>{{ inr(r.total) }}</td><td>{% if r.paid_at %}Paid{% elif state(r)=='cancelled' %}–{% else %}Due on return{% endif %}</td><td><span class="st {{ state(r) }}">{{ state(r)|capitalize }}</span></td></tr>{% endfor %}</table></div>
+{% else %}<p class="empty">No bookings yet. Browse <a href="{{ url_for('cars') }}">cars</a> or <a href="{{ url_for('bikes') }}">bikes</a>.</p>{% endif %}
+{% endblock %}

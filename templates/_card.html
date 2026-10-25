@@ -1,0 +1,14 @@
+{% macro card(v, today) %}
+<article class="card">
+<div class="art">{% if v.kind=='Car' %}<svg viewBox="0 0 240 90" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 60V50c0-5 4-8 10-9l24-6 18-16c3-3 6-4 10-4h50c6 0 10 2 14 6l16 14 22 6c6 2 10 5 10 10v9M20 60h29M75 60h88M189 60h31"/><path d="M72 36l14-13h26v13zM120 23h20c4 0 6 1 8 3l12 10h-40z"/><circle cx="62" cy="60" r="13"/><circle cx="176" cy="60" r="13"/></svg>
+{% else %}<svg viewBox="0 0 240 90" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="50" cy="62" r="20"/><circle cx="190" cy="62" r="20"/><path d="M50 62l35-30h45l20 30M85 32l-8-10h-12M130 32l-6-12h22l14 14M96 62h34"/></svg>{% endif %}
+{% if v.img %}<img src="{{ imgsrc(v.img) }}" alt="{{ v.name }}" loading="lazy" onerror="this.remove()">{% endif %}</div>
+<div class="body"><h3>{{ v.name }}</h3>
+<div class="specs"><span>{{ v.seats }} seats</span><span>{{ v.fuel }}</span><span>{{ v.gear }}</span></div>
+<div class="price">{{ inr(v.price) }}<small> / day</small></div>
+<details><summary class="btn">Book</summary>
+<form method="post" action="{{ url_for('book', vid=v.id) }}"><input type="hidden" name="csrf" value="{{ csrf }}">
+<label>Pickup<input type="date" name="start" min="{{ today }}" required></label>
+<label>Return<input type="date" name="end" min="{{ today }}" required></label>
+<button class="btn">Confirm booking</button><small class="alt">No payment now. Pay when you return the vehicle.</small></form></details></div></article>
+{% endmacro %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% from "_card.html" import card with context %}{% block content %}
+<section class="hero"><span class="pill">Smart vehicle rental</span><h1>Tell us the trip. <em>We’ll pick the ride.</em></h1>
+<p>Cars and bikes with clear daily prices. Ask ArcAI, or browse the fleet.</p>
+<div class="ai" id="ai"><div class="msgs" id="msgs" aria-live="polite"><div class="m bot">Hi, I’m ArcAI. Describe your trip, for example “family of 6, diesel, under 5000”.</div></div>
+<form id="aiform"><input id="q" placeholder="Where are you going, and with whom?" autocomplete="off" aria-label="Ask ArcAI"><button class="btn">Ask</button></form>
+<div class="sugg"><button type="button">Weekend ride in the mountains</button><button type="button">Electric car under 4000</button><button type="button">Luxury car for a wedding</button></div></div></section>
+<section class="tiles"><a class="tile" href="{{ url_for('cars') }}"><h2>Cars</h2><p>Sedans, SUVs, luxury and electric</p><span>Browse cars →</span></a>
+<a class="tile" href="{{ url_for('bikes') }}"><h2>Bikes</h2><p>Cruisers, sport bikes and scooters</p><span>Browse bikes →</span></a></section>
+<h2 class="sec">Featured</h2><div class="grid">{% for v in vehicles %}{{ card(v, today) }}{% endfor %}</div>
+{% endblock %}{% block js %}<script src="{{ url_for('static', filename='ai.js') }}"></script>{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}Dashboard – ArcDrive{% endblock %}{% block content %}
+<section class="head"><h1>Dashboard</h1><p><a href="{{ url_for('admin') }}">← Manage vehicles</a></p></section>
+<div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+<div><b>{{ bookings }}</b><span>Active bookings</span></div><div><b>{{ inr(collected) }}</b><span>Payments collected</span></div>
+<div><b>{{ inr(due) }}</b><span>Still to collect</span></div><div><b>{{ users }}</b><span>Users</span></div></div>
+<h2 class="sec">All bookings</h2>
+{% if rows %}<div class="scroll"><table><tr><th>Ref</th><th>Customer</th><th>Vehicle</th><th>Dates</th><th>Total</th><th>Payment</th><th>Status</th><th></th></tr>
+{% for r in rows %}{% set st = state(r) %}<tr><td>{{ r.ref }}</td><td>{{ r.customer }}<br><small class="empty">{{ r.email }}</small></td><td>{{ r.vehicle }}</td>
+<td>{{ r.start_date }} → {{ r.end_date }}</td><td>{{ inr(r.total) }}</td>
+<td>{% if r.paid_at %}Paid via {{ r.pay_method }}{% elif st=='cancelled' %}–{% else %}Due{% endif %}</td>
+<td><span class="st {{ st }}">{{ st|capitalize }}</span></td>
+<td>{% if st=='upcoming' %}<form method="post" action="{{ url_for('admin_cancel', bid=r.id) }}"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn ghost sm">Cancel</button></form>
+{% elif st in ('active','completed') and not r.paid_at %}<form method="post" action="{{ url_for('admin_paid', bid=r.id) }}" style="display:flex;gap:6px"><input type="hidden" name="csrf" value="{{ csrf }}">
+<select name="method" aria-label="Payment method" style="width:90px;padding:6px"><option>Cash</option><option>UPI</option><option>Card</option></select><button class="btn sm">Mark paid</button></form>{% endif %}</td></tr>{% endfor %}</table></div>
+{% else %}<p class="empty">No bookings yet.</p>{% endif %}
+{% endblock %}

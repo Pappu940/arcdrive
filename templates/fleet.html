@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% from "_card.html" import card with context %}{% block title %}{{ kind }}s – ArcDrive{% endblock %}{% block content %}
+{% set page = 'cars' if kind=='Car' else 'bikes' %}
+<section class="head"><h1>{{ 'Cars' if kind=='Car' else 'Bikes' }}</h1><p>{{ vehicles|length }} available</p></section>
+<form class="filters" method="get"><label>Fuel<select name="fuel" onchange="this.form.submit()"><option>All</option>{% for f in fuels %}<option {{ 'selected' if f==fuel }}>{{ f }}</option>{% endfor %}</select></label>
+<label>Sort by price<select name="sort" onchange="this.form.submit()"><option value="low" {{ 'selected' if sort=='low' }}>Low to high</option><option value="high" {{ 'selected' if sort=='high' }}>High to low</option></select></label></form>
+<div class="grid">{% for v in vehicles %}{{ card(v, today) }}{% else %}<p class="empty">No vehicles match this filter.</p>{% endfor %}</div>
+{% endblock %}
